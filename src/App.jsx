@@ -1,11 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import Dashboard from './pages/SettingPage';
 import HomePage from './pages/HomePage';
 import Register from './pages/Register';
 import Video from './pages/VideoPage';
 import BookingPage from './pages/BookingPage';
+import SettingPage from './pages/SettingPage';
 
 
 
@@ -19,6 +20,7 @@ export default function App() {
             <Route path="/register" element ={<Register />} />
             <Route path="/api/videos" element={<Video />} />
             <Route path="/api/booking" element={<BookingPage />} />
+            <Route path="/api/setting" element={<SettingPage />} />
         </Routes>
     </Router>    
     

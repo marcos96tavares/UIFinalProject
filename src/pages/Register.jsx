@@ -1,103 +1,123 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import axios from "axios";
 
 const Register = () => {
+    // 🔹 State to store form data
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        paymentName: "",
+        paymentCardNumber: "",
+        paymentExpiration: "",
+        paymentCVV: "",
+    });
 
+    // 🔹 State for handling success/error messages
+    const [message, setMessage] = useState(null);
+    const [error, setError] = useState(null);
 
-    const handleSubmit = (e) => {
+    // 🔹 Handle input changes
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    // 🔹 Handle form submission
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle form submission
+
+        try {
+            console.log("📡 Sending registration data:", formData); // Debug log
+
+            // API Call
+            const response = await axios.post("http://localhost:8081/api/membership", {
+                userId: {
+                    
+                    firstNameDto: formData.firstName,
+                    lastNameDto: formData.lastName,
+                    emailDto: formData.email,
+                    passwordDto: formData.password,
+                },
+                paymentId: {
+                    paymentNameDto: formData.paymentName,
+                    paymentCardNumberDto: formData.paymentCardNumber,
+                    ppaymentExpiryDateDtoString: formData.paymentExpiration,
+                    paymentCvvDto: formData.paymentCVV,
+                    paymentAmountDto: 20, // Fixed price for membership
+                },
+            });
+
+            console.log("✅ Registration successful:", response.data); // Debug log
+            setMessage("Registration successful!");
+            setError(null);
+        } catch (err) {
+            console.error("❌ Error registering user:", err);
+            setMessage(null);
+            setError("Failed to register. Please try again.");
+        }
     };
 
     return (
+        <div className="container d-flex flex-column align-items-center">
+            <h2 className="text-center">Registration</h2>
 
-       
-        <div className='container d-flex flex-column align-items-center'>
-        
-            <h2 className='text-center'>Registration</h2>
-            <form className='container mt-5' onSubmit={handleSubmit}>
-                <div className="row ">
+            {/* Success & Error Messages */}
+            {message && <p className="text-success">{message}</p>}
+            {error && <p className="text-danger">{error}</p>}
+
+            <form className="container mt-5" onSubmit={handleSubmit}>
+                <div className="row">
                     <div className="col-6">
-                        <label htmlFor="firstName" className="form-label">First name</label>
-                        <input type="text" className="form-control" id="firstName" placeholder="" required />
-                        <div className="invalid-feedback">
-                            Valid first name is required.
-                        </div>
+                        <label className="form-label">First name</label>
+                        <input type="text" className="form-control" name="firstName" value={formData.firstName} onChange={handleChange} required />
                     </div>
-                    
 
                     <div className="col-6">
-                        <label htmlFor="lastName" className="form-label">Last name</label>
-                        <input type="text" className="form-control" id="lastName" placeholder="" required />
-                        <div className="invalid-feedback">
-                            Valid last name is required.
-                        </div>
+                        <label className="form-label">Last name</label>
+                        <input type="text" className="form-control" name="lastName" value={formData.lastName} onChange={handleChange} required />
                     </div>
 
                     <div className="col-12">
-                        <label htmlFor="email" className="form-label">Email</label>
-                        <input type="email" className="form-control" id="email" placeholder="you@example.com" required />
-                        <div className="invalid-feedback">
-                            Please enter a valid email address for shipping updates.
-                        </div>
+                        <label className="form-label">Email</label>
+                        <input type="email" className="form-control" name="email" value={formData.email} onChange={handleChange} required />
                     </div>
 
                     <div className="col-12">
-                        <label htmlFor="password" className="form-label">Password</label>
-                        <input type="password" className="form-control" id="password" placeholder="Password" required />
-                        <div className="invalid-feedback">
-                            Please enter your password.
-                        </div>
+                        <label className="form-label">Password</label>
+                        <input type="password" className="form-control" name="password" value={formData.password} onChange={handleChange} required />
                     </div>
                 </div>
 
                 <hr className="my-5" />
+                <h2 className="text-center">Payment</h2>
 
-                <h2 className='text-center'>Payment</h2>
                 <div className="row gy-3">
                     <div className="col-md-6">
-                        <label htmlFor="cc-name" className="form-label">Name on card</label>
-                        <input type="text" className="form-control" id="cc-name" placeholder="" required />
-                        <div className="invalid-feedback">
-                            Name on card is required
-                        </div>
+                        <label className="form-label">Name on card</label>
+                        <input type="text" className="form-control" name="paymentName" value={formData.paymentName} onChange={handleChange} required />
                     </div>
 
                     <div className="col-md-6">
-                        <label htmlFor="cc-number" className="form-label">Credit card number</label>
-                        <input type="text" className="form-control" id="cc-number" placeholder="" required />
-                        <div className="invalid-feedback">
-                            Credit card number is required
-                        </div>
+                        <label className="form-label">Credit card number</label>
+                        <input type="text" className="form-control" name="paymentCardNumber" value={formData.paymentCardNumber} onChange={handleChange} required />
                     </div>
 
                     <div className="col-md-3">
-                        <label htmlFor="cc-expiration" className="form-label">Expiration</label>
-                        <input type="text" className="form-control" id="cc-expiration" placeholder="" required />
-                        <div className="invalid-feedback">
-                            Expiration date required
-                        </div>
+                        <label className="form-label">Expiration</label>
+                        <input type="text" className="form-control" name="paymentExpiration" value={formData.paymentExpiration} onChange={handleChange} required />
                     </div>
 
                     <div className="col-md-3">
-                        <label htmlFor="cc-cvv" className="form-label">CVV</label>
-                        <input type="text" className="form-control" id="cc-cvv" placeholder="" required />
-                        <div className="invalid-feedback">
-                            Security code required
-                        </div>
+                        <label className="form-label">CVV</label>
+                        <input type="text" className="form-control" name="paymentCVV" value={formData.paymentCVV} onChange={handleChange} required />
                     </div>
-
-
                 </div>
 
                 <br />
-
-                <div className="row">
-                    <button  type="submit"  className="btn btn-dark">Pay Now £20</button>
-                </div>
+                <button type="submit" className="btn btn-dark">Pay Now £20</button>
             </form>
-           
         </div>
-        
     );
 };
 

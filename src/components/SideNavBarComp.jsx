@@ -30,7 +30,7 @@ const SideNavBar = () => {
                     </Link>
                 </li>
                 <li>
-                    <Link to="/settings" className="nav-link custom-link">
+                    <Link to="/api/setting" className="nav-link custom-link">
                         <FaCog className="icon" />
                         <span>Settings</span>
                     </Link>

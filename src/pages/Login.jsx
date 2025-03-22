@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import {login} from '../api/LoginApi'
+import { login } from '../api/LoginApi';
+import {getUser} from '../api/User'
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -10,15 +11,22 @@ const Login = () => {
         e.preventDefault();
         try {
             const data = await login(email, password);
-            setMessage(`Login successful! Token: ${data.token}`);
-            window.location.href = '/dashboard'; 
+            setMessage(`Login successful! Token: ${data.accessToken}`);
+            
+            // Redirect only if login is successful
+            if (data.accessToken) {
+                const user = await getUser(email);
+                console.log(user)
+                window.location.href = '/api/videos';
+            }
         } catch (error) {
-            setMessage('Login failed. Check your credentials.');
+            setMessage(error.message || 'Login failed. Check your credentials.');
         }
     };
+
     return (
         <div className="container d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
-            <form  onSubmit={handleSubmit} style={{ width: '400px' }}>
+            <form onSubmit={handleSubmit} style={{ width: '400px' }}>
                 <h1 className="h3 mb-3 fw-normal text-center">Please sign in</h1>
 
                 <div className="form-floating mb-3">
