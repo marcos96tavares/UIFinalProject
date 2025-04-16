@@ -19,7 +19,7 @@ const LoginAdmin = () => {
                 
                 // Redirect only if login is successful
                 if (data.accessToken) {
-                    window.location.href = '/api/videos';
+                    window.location.href = '/admin/dashboard';
                 }
             } catch (error) {
                 setMessage(error.message || 'Login failed. Check your credentials.');

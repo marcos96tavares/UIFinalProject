@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { FaSave, FaTimes, FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from 'react';
+import { FaSave, FaTimes, FaUser, FaEnvelope, FaLock, FaTrash, FaExclamationTriangle } from 'react-icons/fa';
 import SideNavBar from '../components/SideNavBarComp';
 import { updateUser } from "../api/User";
+import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import "../styles/SettingPage.css";
 
 const SettingPage = () => {
     const navigate = useNavigate();
+    const deleteModalRef = useRef(null);
     
     const [UserDto, setUserDto] = useState({
         firstNameDto: '',
@@ -16,9 +18,11 @@ const SettingPage = () => {
     });
 
     const [loading, setLoading] = useState(false);
+    const [deleteLoading, setDeleteLoading] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
     const [passwordVisible, setPasswordVisible] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState("");
 
     // Get user data on component mount
     useEffect(() => {
@@ -81,6 +85,67 @@ const SettingPage = () => {
         setError("");
     };
 
+    // Delete account functionality
+    const handleDeleteAccount = async () => {
+        if (confirmDelete !== "DELETE") {
+            setError("Please type DELETE to confirm account deletion");
+            return;
+        }
+
+        setDeleteLoading(true);
+        setError("");
+
+        try {
+            const userId = localStorage.getItem("userid");
+            
+            if (!userId) {
+                throw new Error("User ID not found. Please log in again.");
+            }
+
+            // Parse the user ID as it's stored as a string in localStorage
+            const id = parseInt(userId.replace(/"/g, ''), 10);
+            
+            if (isNaN(id)) {
+                throw new Error("Invalid user ID format. Please log in again.");
+            }
+
+            // Make the DELETE request
+            await axios.delete(`http://localhost:8081/api/user/${id}`);
+            
+            setSuccess("Your account has been deleted successfully.");
+            
+            // Clear local storage
+            localStorage.removeItem("userid");
+            
+            // Redirect to home page after short delay
+            setTimeout(() => {
+                navigate("/home");
+            }, 2000);
+            
+        } catch (error) {
+            console.error("Error deleting account:", error);
+            setError(error.message || "Failed to delete account. Please try again.");
+        } finally {
+            setDeleteLoading(false);
+            closeDeleteModal();
+        }
+    };
+
+    // Open delete confirmation modal
+    const openDeleteModal = () => {
+        if (deleteModalRef.current) {
+            deleteModalRef.current.style.display = "flex";
+        }
+    };
+
+    // Close delete confirmation modal
+    const closeDeleteModal = () => {
+        if (deleteModalRef.current) {
+            deleteModalRef.current.style.display = "none";
+            setConfirmDelete("");
+        }
+    };
+
     return (
         <div className="settings-page">
             {/* Sidebar */}
@@ -91,8 +156,17 @@ const SettingPage = () => {
             {/* Main Content */}
             <div className="settings-main-content">
                 <div className="settings-header">
-                    <h1>Account Settings</h1>
-                    <p>Update your personal information</p>
+                    <div className="settings-title">
+                        <h1>Account Settings</h1>
+                        <p>Update your personal information</p>
+                    </div>
+                    <button 
+                        className="delete-account-button-header" 
+                        onClick={openDeleteModal}
+                    >
+                        <FaTrash className="delete-icon" />
+                        <span>Delete Account</span>
+                    </button>
                 </div>
 
                 {/* Alert Messages */}
@@ -218,6 +292,58 @@ const SettingPage = () => {
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+
+            {/* Delete Account Confirmation Modal */}
+            <div className="delete-modal" ref={deleteModalRef}>
+                <div className="delete-modal-content">
+                    <div className="delete-modal-header">
+                        <h2>Delete Account</h2>
+                        <button 
+                            className="close-modal-button" 
+                            onClick={closeDeleteModal}
+                        >
+                            <FaTimes />
+                        </button>
+                    </div>
+                    <div className="delete-modal-body">
+                        <div className="warning-icon">
+                            <FaExclamationTriangle />
+                        </div>
+                        <p className="delete-warning">
+                            You are about to delete your account. This action cannot be undone.
+                            All your personal information and booking history will be permanently deleted.
+                        </p>
+                        <p className="delete-confirm-instructions">
+                            Please type <strong>DELETE</strong> to confirm:
+                        </p>
+                        <input
+                            type="text"
+                            className="delete-confirm-input"
+                            value={confirmDelete}
+                            onChange={(e) => setConfirmDelete(e.target.value)}
+                            placeholder="Type DELETE to confirm"
+                        />
+                    </div>
+                    <div className="delete-modal-footer">
+                        <button 
+                            className="cancel-delete-button" 
+                            onClick={closeDeleteModal}
+                            disabled={deleteLoading}
+                        >
+                            <FaTimes />
+                            <span>Cancel</span>
+                        </button>
+                        <button 
+                            className="confirm-delete-button" 
+                            onClick={handleDeleteAccount}
+                            disabled={confirmDelete !== "DELETE" || deleteLoading}
+                        >
+                            <FaTrash />
+                            <span>{deleteLoading ? "Deleting..." : "Delete My Account"}</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

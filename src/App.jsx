@@ -12,6 +12,8 @@ import LoginAdmin from './pages/LoginAdmin';
 import ClassesAdminPage from './pages/ClassesAdminPage';
 import Dashboard from './pages/Dashboard';
 import Page404 from './pages/Page404';
+import VideoAdminPage from './pages/VideoAdminPage';
+import AdminRegisterPage from './pages/AdminRegisterPage';
 
 
 export default function App() {
@@ -32,6 +34,8 @@ export default function App() {
            <Route path="/login/admin" element={<LoginAdmin />} />
            <Route path="/admin/class" element={<ClassesAdminPage />} />
            <Route path="/admin/dashboard" element={<Dashboard />} />
+           <Route path="/admin/video" element={<VideoAdminPage />} />
+           <Route path="/admin/register" element={<AdminRegisterPage />} />
 
            <Route path='*' element={<Page404 />} />
 

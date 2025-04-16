@@ -199,7 +199,7 @@ const PaymentPage = () => {
                                     <div className="payment-summary">
                                         <div className="summary-row">
                                             <span>Class fee</span>
-                                            <span>£15.00</span>
+                                            <span>£115.00</span>
                                         </div>
                                         <div className="summary-row">
                                             <span>Booking fee</span>
@@ -211,7 +211,7 @@ const PaymentPage = () => {
                                         </div>
                                         <div className="summary-row total">
                                             <span>Total</span>
-                                            <span>£20.00</span>
+                                            <span>£120.00</span>
                                         </div>
                                     </div>
 
@@ -228,7 +228,7 @@ const PaymentPage = () => {
                                         ) : (
                                             <>
                                                 <FaLock />
-                                                <span>Pay £20.00</span>
+                                                <span>Pay £120.00</span>
                                             </>
                                         )}
                                     </button>
