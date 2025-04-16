@@ -1,15 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Modal } from "bootstrap";
 import axios from "axios";
+import { FaClock, FaUserCheck, FaUserTimes, FaCalendarCheck, FaCalendarTimes } from "react-icons/fa";
 import BookingClassModel from "../model/BookingClassModel";
 import Worming from "../model/Worming";
 import apiService from "../api/apiService";
+
 
 const MuyThaiClassComp = ({ classData, tracker }) => {
     const bookingModalRef = useRef(null);
     const cancelModalRef = useRef(null);
     const [statusMessage, setStatusMessage] = useState("");
     const [bookedClassId, setBookedClassId] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     const studentId = localStorage.getItem("userid");
 
@@ -82,6 +85,8 @@ const MuyThaiClassComp = ({ classData, tracker }) => {
             return;
         }
 
+        setIsLoading(true);
+        
         try {
             const response = await axios.post(
                 `http://localhost:8080/api/booking/book/${studentId}/${tracker.trackerId}`
@@ -100,6 +105,8 @@ const MuyThaiClassComp = ({ classData, tracker }) => {
         } catch (error) {
             console.error("Booking failed:", error);
             showStatusMessage("❌ Booking failed. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -109,6 +116,8 @@ const MuyThaiClassComp = ({ classData, tracker }) => {
             return;
         }
 
+        setIsLoading(true);
+        
         try {
             await apiService.deleteBooking(studentId, tracker.trackerId);
             await handleNoAttend();
@@ -118,44 +127,90 @@ const MuyThaiClassComp = ({ classData, tracker }) => {
         } catch (error) {
             console.error("Cancellation failed:", error);
             showStatusMessage("❌ Cancellation failed. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
-        <div className="card mb-3 p-3 shadow">
+        <div className="card mb-3 shadow">
             <div className="card-body">
                 {statusMessage && <div className="alert alert-info text-center">{statusMessage}</div>}
 
                 <div className="row align-items-center">
-                    <div className="col-8">
-                        <h3 className="text-lg font-semibold">{classData?.classNameDto || "Unknown Class"}</h3>
-                        <p className="text-gray-500">
+                    <div className="col-md-8 col-12">
+                        <h3>{classData?.classNameDto || "Unknown Class"}</h3>
+                        <p className="d-flex align-items-center">
+                            <FaClock className="me-2" />
                             {classData?.classTimeStarDto || "Unknown"} - {classData?.classTimeEndDto || "Unknown"}
                         </p>
+                        
+                        {/* Class statistics - conditionally rendered */}
+                        {tracker && (
+                            <div className="class-stats mt-2 d-flex">
+                                <div className="stat-badge me-2">
+                                    <FaUserCheck className="me-1" /> {tracker.attended || 0} attending
+                                </div>
+                                {tracker.waitlist > 0 && (
+                                    <div className="stat-badge me-2">
+                                        <span className="me-1">👥</span> {tracker.waitlist} waiting
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
-                    <div className="col-4 d-flex justify-content-end gap-2">
-                        <button className="btn btn-dark px-4 py-2"
+                    <div className="col-md-4 col-12 d-flex justify-content-md-end justify-content-start mt-md-0 mt-3 gap-2">
+                        <button 
+                            className={`btn btn-dark ${isLoading ? 'loading' : ''}`}
                             onClick={() => openModal(bookingModalRef)}
-                            disabled={bookedClassId !== null}>
-                            Book Now
+                            disabled={bookedClassId !== null || isLoading}>
+                            {isLoading ? (
+                                <>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Loading...
+                                </>
+                            ) : (
+                                <>
+                                    <FaCalendarCheck className="me-2" />
+                                    Book Now
+                                </>
+                            )}
                         </button>
 
-                        <button className="btn btn-danger px-4 py-2"
+                        <button 
+                            className={`btn btn-danger ${isLoading ? 'loading' : ''}`}
                             onClick={() => openModal(cancelModalRef)}
-                            disabled={bookedClassId === null}>
-                            Cancel Booking
+                            disabled={bookedClassId === null || isLoading}>
+                            {isLoading ? (
+                                <>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Loading...
+                                </>
+                            ) : (
+                                <>
+                                    <FaCalendarTimes className="me-2" />
+                                    Cancel
+                                </>
+                            )}
                         </button>
                     </div>
                 </div>
+                
+                {/* Status badge */}
+                {bookedClassId === tracker?.trackerId && (
+                    <div className="booked-badge">
+                        <span>Booked</span>
+                    </div>
+                )}
             </div>
 
             {/* Booking Modal */}
             <div ref={bookingModalRef} className="modal fade" tabIndex="-1" aria-hidden="true">
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5">Class Booking</h1>
+                            <h1 className="modal-title fs-5">Book Your Class</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" onClick={() => closeModal(bookingModalRef)}></button>
                         </div>
                         <div className="modal-body">
@@ -166,11 +221,27 @@ const MuyThaiClassComp = ({ classData, tracker }) => {
                             )}
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => closeModal(bookingModalRef)}>Close</button>
-                            <button type="button" className="btn btn-primary"
+                            <button 
+                                type="button" 
+                                className="btn btn-secondary" 
+                                data-bs-dismiss="modal" 
+                                onClick={() => closeModal(bookingModalRef)}
+                                disabled={isLoading}>
+                                Close
+                            </button>
+                            <button 
+                                type="button" 
+                                className={`btn btn-primary ${isLoading ? 'loading' : ''}`}
                                 onClick={handleConfirmBooking}
-                                disabled={bookedClassId !== null}>
-                                Confirm Booking
+                                disabled={bookedClassId !== null || isLoading}>
+                                {isLoading ? (
+                                    <>
+                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Processing...
+                                    </>
+                                ) : (
+                                    "Confirm Booking"
+                                )}
                             </button>
                         </div>
                     </div>
@@ -179,20 +250,37 @@ const MuyThaiClassComp = ({ classData, tracker }) => {
 
             {/* Cancel Modal */}
             <div ref={cancelModalRef} className="modal fade" tabIndex="-1" aria-hidden="true">
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h1 className="modal-title fs-5">Cancel the Class</h1>
+                            <h1 className="modal-title fs-5">Cancel Your Booking</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" onClick={() => closeModal(cancelModalRef)}></button>
                         </div>
                         <div className="modal-body">
                             <Worming />
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-danger"
+                            <button 
+                                type="button" 
+                                className="btn btn-secondary" 
+                                data-bs-dismiss="modal" 
+                                onClick={() => closeModal(cancelModalRef)}
+                                disabled={isLoading}>
+                                Close
+                            </button>
+                            <button 
+                                type="button" 
+                                className={`btn btn-danger ${isLoading ? 'loading' : ''}`}
                                 onClick={handleCancelBooking}
-                                disabled={bookedClassId === null}>
-                                Confirm Cancellation
+                                disabled={bookedClassId === null || isLoading}>
+                                {isLoading ? (
+                                    <>
+                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Processing...
+                                    </>
+                                ) : (
+                                    "Confirm Cancellation"
+                                )}
                             </button>
                         </div>
                     </div>

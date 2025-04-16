@@ -1,0 +1,254 @@
+/* MuythaiClassComp.css */
+
+.card {
+    background-color: white;
+    border: none !important;
+    border-radius: 16px !important;
+    transition: all 0.3s ease;
+    margin-bottom: 16px !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+}
+
+.card-body {
+    padding: 20px !important;
+}
+
+/* Booked Badge */
+.booked-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: linear-gradient(135deg, #4a6fff 0%, #2a4fdf 100%);
+    color: white;
+    padding: 5px 15px;
+    font-size: 12px;
+    font-weight: 600;
+    border-bottom-left-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Class Title and Time */
+.card h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.card p {
+    color: #6c757d;
+    margin: 6px 0 0;
+    font-size: 15px;
+}
+
+/* Buttons */
+.btn {
+    font-weight: 600 !important;
+    border-radius: 8px !important;
+    transition: all 0.2s !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 10px 16px !important;
+}
+
+.btn:hover:not(:disabled) {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn:active:not(:disabled) {
+    transform: translateY(0) !important;
+}
+
+.btn:disabled {
+    opacity: 0.65 !important;
+    cursor: not-allowed !important;
+}
+
+/* Book Now Button */
+.btn-dark {
+    background: linear-gradient(135deg, #4a6fff 0%, #2a4fdf 100%) !important;
+    color: white !important;
+}
+
+.btn-dark:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3a5fee 0%, #1a3fcf 100%) !important;
+    box-shadow: 0 4px 10px rgba(74, 111, 255, 0.2) !important;
+}
+
+/* Cancel Button */
+.btn-danger {
+    background: linear-gradient(135deg, #ff5f6d 0%, #d62839 100%) !important;
+    color: white !important;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ff4f5d 0%, #c62232 100%) !important;
+    box-shadow: 0 4px 10px rgba(214, 40, 57, 0.2) !important;
+}
+
+/* Status Message */
+.alert {
+    border-radius: 8px !important;
+    margin-bottom: 15px !important;
+    font-weight: 500 !important;
+    padding: 12px !important;
+}
+
+.alert-info {
+    background-color: #e1f5fe !important;
+    color: #0288d1 !important;
+    border: 1px solid #b3e5fc !important;
+}
+
+/* Modal Styling */
+.modal-content {
+    border: none !important;
+    border-radius: 16px !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+    overflow: hidden !important;
+}
+
+.modal-header {
+    background-color: #f5f7fa !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+    padding: 20px 24px !important;
+}
+
+.modal-title {
+    font-weight: 600 !important;
+    font-size: 20px !important;
+    color: #333 !important;
+}
+
+.modal-body {
+    padding: 24px !important;
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05) !important;
+    padding: 16px 24px !important;
+}
+
+.btn-close {
+    opacity: 0.5 !important;
+    transition: opacity 0.2s !important;
+}
+
+.btn-close:hover {
+    opacity: 0.8 !important;
+}
+
+/* Secondary Button in Modal */
+.btn-secondary {
+    background-color: #eaecf0 !important;
+    color: #4f566b !important;
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: #dde0e6 !important;
+    color: #333 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Primary Button in Modal */
+.btn-primary {
+    background: linear-gradient(135deg, #4a6fff 0%, #2a4fdf 100%) !important;
+    color: white !important;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #3a5fee 0%, #1a3fcf 100%) !important;
+    box-shadow: 0 4px 10px rgba(74, 111, 255, 0.2) !important;
+}
+
+/* Stats Badges */
+.class-stats {
+    display: flex;
+    align-items: center;
+}
+
+.stat-badge {
+    display: inline-flex;
+    align-items: center;
+    background-color: #f0f4f9;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #4f566b;
+    font-weight: 500;
+}
+
+/* Loading State */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.15em;
+}
+
+.btn.loading {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Error Messages */
+.text-danger {
+    color: #dc3545 !important;
+    font-weight: 500 !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .row.align-items-center {
+        flex-direction: column !important;
+    }
+    
+    .col-8, .col-4 {
+        width: 100% !important;
+        padding: 10px 0 !important;
+    }
+    
+    .col-4 {
+        justify-content: flex-start !important;
+    }
+    
+    .card-body {
+        padding: 15px !important;
+    }
+    
+    .modal-dialog {
+        margin: 15px !important;
+    }
+    
+    .modal-header, .modal-body, .modal-footer {
+        padding: 15px !important;
+    }
+}
+
+/* Fix Bootstrap Class Overrides */
+.gap-2 {
+    gap: 0.5rem !important;
+}
+
+.shadow {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05) !important;
+}
+
+.p-3 {
+    padding: 0 !important; /* Remove default padding as we're controlling it in card-body */
+}
+
+.mb-3 {
+    margin-bottom: 1rem !important;
+}

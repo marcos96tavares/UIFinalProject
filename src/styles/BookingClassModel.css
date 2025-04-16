@@ -1,0 +1,94 @@
+/* BookingClassModel.css */
+
+.booking-model-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    background-color: transparent;
+}
+
+.booking-model-card {
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.booking-subtitle {
+    color: #6c757d;
+    margin-bottom: 16px;
+    font-size: 15px;
+}
+
+.booking-info-container {
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 12px;
+}
+
+.booking-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 0;
+    color: #333;
+}
+
+.booking-stats-row {
+    display: flex;
+    margin-top: 16px;
+    gap: 12px;
+}
+
+.booking-stat-column {
+    flex: 1;
+}
+
+.booking-stat-box {
+    background-color: #eaecf0;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+}
+
+.booking-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    color: #4a6fff;
+}
+
+.booking-stat-label {
+    color: #6c757d;
+    font-size: 12px;
+    margin: 4px 0 0 0;
+}
+
+/* Fix compatibility issues */
+@supports (text-size-adjust: 100%) {
+    .booking-model-container {
+        text-size-adjust: 100%;
+    }
+}
+
+@supports (text-align: match-parent) {
+    .booking-stat-box {
+        text-align: match-parent;
+    }
+}
+
+@supports (-webkit-user-select: none) {
+    .booking-model-card {
+        -webkit-user-select: none;
+        user-select: none;
+    }
+}
+
+@media print {
+    .booking-model-card {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

@@ -1,108 +1,224 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { FaSave, FaTimes, FaUser, FaEnvelope, FaLock } from 'react-icons/fa';
 import SideNavBar from '../components/SideNavBarComp';
+import { updateUser } from "../api/User";
+import { useNavigate } from "react-router-dom";
+import "../styles/SettingPage.css";
 
 const SettingPage = () => {
-    // ✅ State to hold form inputs
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: ''
+    const navigate = useNavigate();
+    
+    const [UserDto, setUserDto] = useState({
+        firstNameDto: '',
+        lastNameDto: '',
+        emailDto: '',
+        passwordDto: ''
     });
 
-    // ✅ Handle input changes
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [passwordVisible, setPasswordVisible] = useState(false);
+
+    // Get user data on component mount
+    useEffect(() => {
+        // You could fetch current user data here to pre-fill the form
+        // For now, we'll leave it empty for the user to fill
+    }, []);
+
+    // Handle input changes
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setUserDto({ ...UserDto, [e.target.name]: e.target.value });
+        
+        // Clear error message when user starts typing
+        if (error) setError("");
     };
 
-    // ✅ Handle form submission
-    const handleSubmit = (e) => {
+    // Toggle password visibility
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
+    };
+
+    // Handle form submission (async for API call)
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Updated User Data:', formData);
-        // 🔹 Add API call to save user settings here
+        setLoading(true);
+        setError("");
+        setSuccess("");
+
+        const id = localStorage.getItem("userid");
+        
+        try {
+            if (!id) {
+                throw new Error("User ID not found. Please log in again.");
+            }
+            
+            if (!UserDto.firstNameDto || !UserDto.lastNameDto || !UserDto.emailDto || !UserDto.passwordDto) {
+                throw new Error("All fields are required!");
+            }
+
+            const response = await updateUser(id, UserDto);
+            console.log('Updated User Data:', response);
+
+            setSuccess("Profile updated successfully!");
+            
+            // Reset form after short delay
+            setTimeout(() => {
+                handleCancel();
+            }, 3000);
+            
+        } catch (error) {
+            console.error("Error updating user:", error);
+            setError(error.message || "Failed to update profile. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
-    // ✅ Handle cancel action
+    // Handle cancel action (reset form)
     const handleCancel = () => {
-        setFormData({ firstName: '', lastName: '', email: '', password: '' }); // Reset form
+        setUserDto({ firstNameDto: '', lastNameDto: '', emailDto: '', passwordDto: '' });
+        setError("");
     };
 
     return (
-        <div className="d-flex">
+        <div className="settings-page">
             {/* Sidebar */}
-            <SideNavBar />
+            <div className="settings-sidebar">
+                <SideNavBar />
+            </div>
 
             {/* Main Content */}
-            <div className="container d-flex flex-column align-items-center mt-5">
-                <h2 className="text-center">Settings</h2>
+            <div className="settings-main-content">
+                <div className="settings-header">
+                    <h1>Account Settings</h1>
+                    <p>Update your personal information</p>
+                </div>
 
-                <form className="container mt-3 p-4 border rounded shadow-sm" onSubmit={handleSubmit}>
-                    <div className="row">
-                        {/* First Name */}
-                        <div className="col-6">
-                            <label htmlFor="firstName" className="form-label">First Name</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="firstName"
-                                name="firstName"
-                                value={formData.firstName}
-                                onChange={handleChange}
-                                required
-                            />
-                        </div>
+                {/* Alert Messages */}
+                {error && (
+                    <div className="settings-alert settings-alert-error">
+                        <p>{error}</p>
+                    </div>
+                )}
+                
+                {success && (
+                    <div className="settings-alert settings-alert-success">
+                        <p>{success}</p>
+                    </div>
+                )}
 
-                        {/* Last Name */}
-                        <div className="col-6">
-                            <label htmlFor="lastName" className="form-label">Last Name</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="lastName"
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                                required
-                            />
+                <div className="settings-card">
+                    <div className="settings-card-header">
+                        <h2>Personal Information</h2>
+                        <p>Update your account details</p>
+                    </div>
+
+                    <form className="settings-form" onSubmit={handleSubmit}>
+                        <div className="form-row">
+                            {/* First Name */}
+                            <div className="form-group">
+                                <label htmlFor="firstNameDto">
+                                    <FaUser className="input-icon" />
+                                    First Name
+                                </label>
+                                <input
+                                    type="text"
+                                    id="firstNameDto"
+                                    name="firstNameDto"
+                                    value={UserDto.firstNameDto}
+                                    onChange={handleChange}
+                                    placeholder="Enter your first name"
+                                    required
+                                />
+                            </div>
+
+                            {/* Last Name */}
+                            <div className="form-group">
+                                <label htmlFor="lastNameDto">
+                                    <FaUser className="input-icon" />
+                                    Last Name
+                                </label>
+                                <input
+                                    type="text"
+                                    id="lastNameDto"
+                                    name="lastNameDto"
+                                    value={UserDto.lastNameDto}
+                                    onChange={handleChange}
+                                    placeholder="Enter your last name"
+                                    required
+                                />
+                            </div>
                         </div>
 
                         {/* Email */}
-                        <div className="col-12 mt-3">
-                            <label htmlFor="email" className="form-label">Email</label>
+                        <div className="form-group">
+                            <label htmlFor="emailDto">
+                                <FaEnvelope className="input-icon" />
+                                Email Address
+                            </label>
                             <input
                                 type="email"
-                                className="form-control"
-                                id="email"
-                                name="email"
-                                value={formData.email}
+                                id="emailDto"
+                                name="emailDto"
+                                value={UserDto.emailDto}
                                 onChange={handleChange}
+                                placeholder="Enter your email address"
                                 required
                             />
                         </div>
 
                         {/* Password */}
-                        <div className="col-12 mt-3">
-                            <label htmlFor="password" className="form-label">Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                id="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                required
-                            />
+                        <div className="form-group password-group">
+                            <label htmlFor="passwordDto">
+                                <FaLock className="input-icon" />
+                                Password
+                            </label>
+                            <div className="password-input-container">
+                                <input
+                                    type={passwordVisible ? "text" : "password"}
+                                    id="passwordDto"
+                                    name="passwordDto"
+                                    value={UserDto.passwordDto}
+                                    onChange={handleChange}
+                                    placeholder="Enter your password"
+                                    required
+                                    autoComplete="current-password"
+                                />
+                                <button 
+                                    type="button" 
+                                    className="password-toggle"
+                                    onClick={togglePasswordVisibility}
+                                    tabIndex="-1"
+                                >
+                                    {passwordVisible ? "Hide" : "Show"}
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Buttons */}
-                    <div className="row mt-4">
-                        <div className="col text-center">
-                            <button className="btn btn-primary mx-2" type="submit">Save</button>
-                            <button className="btn btn-secondary mx-2" type="button" onClick={handleCancel}>Cancel</button>
+                        {/* Form Actions */}
+                        <div className="form-actions">
+                            <button 
+                                type="button" 
+                                className="cancel-button" 
+                                onClick={handleCancel} 
+                                disabled={loading}
+                            >
+                                <FaTimes />
+                                <span>Cancel</span>
+                            </button>
+                            
+                            <button 
+                                type="submit" 
+                                className="save-button" 
+                                disabled={loading}
+                            >
+                                <FaSave />
+                                <span>{loading ? "Saving..." : "Save Changes"}</span>
+                            </button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     );

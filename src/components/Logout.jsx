@@ -1,8 +1,8 @@
+
 import React from 'react';
-import { FaDoorOpen } from "react-icons/fa";
+import { FaSignOutAlt } from 'react-icons/fa';
 
-
-const Logout = () => {
+const Logout = ({ customClass, collapsed }) => {
     const handleLogout = () => {
         localStorage.removeItem('userToken');
         localStorage.removeItem('userid');
@@ -10,18 +10,12 @@ const Logout = () => {
     };
 
     return (
-        <div className="position-fixed bottom-0 m-1">
-
-            <button 
-            
-                className="btn btn-danger px-4 fw-semibold shadow"
-                onClick={handleLogout}
-            >
-            <FaDoorOpen className='icon' />
-            
-            <div className='text'> Logout</div>
-            </button>
-        </div>
+        <button onClick={handleLogout} className={customClass}>
+            <div className="icon-container">
+                <FaSignOutAlt />
+            </div>
+            {!collapsed && <span>Logout</span>}
+        </button>
     );
 };
 

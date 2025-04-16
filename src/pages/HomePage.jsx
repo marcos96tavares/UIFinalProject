@@ -1,96 +1,255 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CarouselComp from "../components/CarouserlComp";
 import About from "../components/About";
 import Contacts from "../components/Contacts";
+import { GiSharkJaws } from "react-icons/gi";
+import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 
 const HomePage = () => {
-    const navigate = useNavigate();
-
-    const handleLoginClick = () => {
-        navigate("/login");
+  const navigate = useNavigate();
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  
+  // Handle navigation
+  const handleLoginClick = () => navigate("/login");
+  const handleRegisterClick = () => navigate("/register");
+  
+  // Handle scroll events
+  useEffect(() => {
+    const handleScroll = () => {
+      const position = window.scrollY;
+      setScrollPosition(position);
+      
+      // Show scroll-to-top button after scrolling down
+      if (position > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+    
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+  
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  };
+  
+  // Smooth scroll to section
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
     }
+  };
 
+  return (
+    <div className="bg-light text-dark">
+      {/* Dynamic Header - changes on scroll */}
+      <header className={`p-3 ${scrollPosition > 100 ? "bg-dark text-white fixed-top shadow" : "bg-transparent"} transition-all duration-300`}>
+        <div className="container">
+          <div className="d-flex flex-wrap align-items-center justify-content-between">
+            
+            {/* Logo & Name with animation */}
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToTop();
+              }}
+              className="d-flex align-items-center text-decoration-none"
+            >
+              <GiSharkJaws className={`fs-1 me-2 ${scrollPosition > 100 ? "text-info" : "text-primary"}`} />
+              <span className={`fs-4 fw-bold ${scrollPosition > 100 ? "text-white" : "text-dark"}`}>
+                Team <span className="text-danger">Shark</span>
+              </span>
+            </a>
 
-    const handleRegisterClick = () => {
-        navigate("/register");
-    }
+            {/* Navbar Links */}
+            <ul className="nav">
+              <li>
+                <a 
+                  href="#" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection("about");
+                  }}
+                  className={`nav-link px-3 fw-bold ${scrollPosition > 100 ? "text-white hover:text-info" : "text-dark hover:text-primary"}`}
+                >
+                  ABOUT
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="#" 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection("contacts");
+                  }}
+                  className={`nav-link px-3 fw-bold ${scrollPosition > 100 ? "text-white hover:text-info" : "text-dark hover:text-primary"}`}
+                >
+                  CONTACTS
+                </a>
+              </li>
+            </ul>
 
-
-    return (
-        <div className="bg-light text-white">
-            <header className="p-3 text-bg-white">
-                <div className="container">
-                    <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                        <a
-                            href="/"
-                            className="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none"
-                        >
-                            <svg
-                                className="bi me-2"
-                                width="40"
-                                height="32"
-                                role="img"
-                                aria-label="Bootstrap"
-                                xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 16 16"
-                            >
-                                <path d="M5.062 12.5c-.5 0-.938-.188-1.312-.562-.375-.375-.562-.812-.562-1.312V5.375c0-.5.188-.938.562-1.312.375-.375.812-.562 1.312-.562h3.875c.5 0 .938.188 1.312.562.375.375.562.812.562 1.312v5.25c0 .5-.188.938-.562 1.312-.375.375-.812.562-1.312.562H5.062zm0-1.25h3.875c.188 0 .344-.062.469-.188.125-.125.188-.281.188-.469V5.375c0-.188-.062-.344-.188-.469-.125-.125-.281-.188-.469-.188H5.062c-.188 0-.344.062-.469.188-.125.125-.188.281-.188.469v5.25c0 .188.062.344.188.469.125.125.281.188.469.188z"/>
-                            </svg>
-                        </a>
-
-                        <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                            <li>
-                                <a href="#" className="nav-link px-2 text-dark">
-                                    ABOUT
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" className="nav-link px-2 text-dark">
-                                    CONTACTS
-                                </a>
-                            </li>
-                        </ul>
-
-                        <div className="text-end">
-                            <button type="button" className="btn btn-outline-success me-2" onClick={handleLoginClick}>
-                                Login
-                            </button>
-                            <button type="button" className="btn btn-primary" onClick={handleRegisterClick}>
-                                Sign-up
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            <main>
-                <div className="position-relative">
-                    <CarouselComp />
-                    <About />
-                    <Contacts />
-                </div>
-            </main>
-
-            <div className="container">
-                <footer className="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-                    <p className="col-md-4 mb-0 text-body-secondary">© 2024 Company, Inc</p>
-
-                    <a href="/" className="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                        <svg className="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-                    </a>
-
-                    <ul className="nav col-md-4 justify-content-end">
-                        <li className="nav-item"><a href="#" className="nav-link px-2 text-body-secondary">Home</a></li>
-                        <li className="nav-item"><a href="#" className="nav-link px-2 text-body-secondary">Features</a></li>
-                        <li className="nav-item"><a href="#" className="nav-link px-2 text-body-secondary">Pricing</a></li>
-                        <li className="nav-item"><a href="#" className="nav-link px-2 text-body-secondary">FAQs</a></li>
-                        <li className="nav-item"><a href="#" className="nav-link px-2 text-body-secondary">About</a></li>
-                    </ul>
-                </footer>
+            {/* Buttons with hover effects */}
+            <div>
+              <button 
+                type="button" 
+                className="btn btn-outline-danger me-2 px-4 fw-semibold" 
+                onClick={handleLoginClick}
+              >
+                Login
+              </button>
+              <button 
+                type="button" 
+                className="btn btn-primary px-4 fw-semibold" 
+                onClick={handleRegisterClick}
+              >
+                Sign-up
+              </button>
             </div>
+          </div>
         </div>
-    );
+      </header>
+
+      <main>
+        {/* Hero section overlay with text */}
+        <div className="position-relative">
+          <CarouselComp />
+          <div className="position-absolute top-50 start-0 w-100 text-center translate-middle-y">
+            <div className="container">
+              <h1 className="display-2 fw-bold text-white shadow-text">TRAIN LIKE A SHARK</h1>
+              <p className="lead fs-3 text-white shadow-text mb-4">Unleash your potential with Team Shark Gym</p>
+              <button onClick={handleRegisterClick} className="btn btn-danger btn-lg px-5 py-3 fw-bold animate-pulse">
+                JOIN NOW
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {/* Content sections with better spacing */}
+        <div className="container my-5 py-5" id="about">
+          <About />
+        </div>
+        
+        <div className="bg-dark text-white py-5">
+          <div className="container my-5" id="contacts">
+            <Contacts />
+          </div>
+        </div>
+        
+        {/* Call to action section */}
+        <div className="bg-primary text-white py-5">
+          <div className="container text-center py-4">
+            <h2 className="display-5 mb-4">Ready to start your fitness journey?</h2>
+            <p className="lead mb-4">Join Team Shark today and transform your body and mind.</p>
+            <div className="d-flex justify-content-center gap-3">
+              <button onClick={handleLoginClick} className="btn btn-outline-light btn-lg px-4">
+                Login
+              </button>
+              <button onClick={handleRegisterClick} className="btn btn-light text-primary btn-lg px-4">
+                Sign Up Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Enhanced Footer */}
+      <div className="bg-dark text-white">
+        <div className="container">
+          <footer className="py-5">
+            <div className="row">
+              <div className="col-md-4 mb-4">
+                <h5 className="fw-bold mb-3">Team Shark</h5>
+                <p className="text-muted">Experience world-class martial arts training with our expert coaches and state-of-the-art facilities.</p>
+                <div className="d-flex gap-3 mt-3">
+                  <a href="#" className="text-white fs-4"><FaFacebook /></a>
+                  <a href="#" className="text-white fs-4"><FaInstagram /></a>
+                  <a href="#" className="text-white fs-4"><FaTwitter /></a>
+                </div>
+              </div>
+              
+              <div className="col-md-2 mb-4">
+                <h5 className="fw-bold mb-3">Links</h5>
+                <ul className="nav flex-column">
+                  <li className="nav-item mb-2"><a href="#" className="nav-link p-0 text-muted">Home</a></li>
+                  <li className="nav-item mb-2"><a href="#about" className="nav-link p-0 text-muted">About</a></li>
+                  <li className="nav-item mb-2"><a href="#contacts" className="nav-link p-0 text-muted">Contacts</a></li>
+                </ul>
+              </div>
+              
+              <div className="col-md-2 mb-4">
+                <h5 className="fw-bold mb-3">Classes</h5>
+                <ul className="nav flex-column">
+                  <li className="nav-item mb-2"><a href="#" className="nav-link p-0 text-muted">Muay Thai</a></li>
+                  <li className="nav-item mb-2"><a href="#" className="nav-link p-0 text-muted">Boxing</a></li>
+                  <li className="nav-item mb-2"><a href="#" className="nav-link p-0 text-muted">MMA</a></li>
+                  <li className="nav-item mb-2"><a href="#" className="nav-link p-0 text-muted">BJJ</a></li>
+                </ul>
+              </div>
+              
+              <div className="col-md-4 mb-4">
+                <h5 className="fw-bold mb-3">Contact Us</h5>
+                <ul className="nav flex-column">
+                  <li className="nav-item mb-2 text-muted">123 Shark Street, London</li>
+                  <li className="nav-item mb-2 text-muted">Phone: +44 20 1234 5678</li>
+                  <li className="nav-item mb-2 text-muted">Email: info@teamshark.com</li>
+                </ul>
+              </div>
+            </div>
+            
+            <div className="d-flex flex-column flex-sm-row justify-content-between pt-4 mt-4 border-top">
+              <p>© 2024 Team Shark, Inc. All rights reserved.</p>
+            </div>
+          </footer>
+        </div>
+      </div>
+      
+      {/* Back to top button */}
+      {isVisible && (
+        <button 
+          onClick={scrollToTop}
+          className="btn btn-danger rounded-circle position-fixed bottom-0 end-0 m-4"
+          style={{ width: "50px", height: "50px", display: "flex", alignItems: "center", justifyContent: "center" }}
+        >
+          <i className="bi bi-arrow-up"></i>
+          ↑
+        </button>
+      )}
+      
+      {/* Custom CSS */}
+      <style jsx>{`
+        .shadow-text {
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .animate-pulse {
+          animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+          0% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+          100% { transform: scale(1); }
+        }
+        
+        .transition-all {
+          transition: all 0.3s ease;
+        }
+      `}</style>
+    </div>
+  );
 };
 
 export default HomePage;

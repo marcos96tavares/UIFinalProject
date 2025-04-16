@@ -1,0 +1,345 @@
+/* PaymentPage.css */
+
+.payment-page {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.payment-layout {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar-container {
+    flex: 0 0 auto;
+    z-index: 10;
+}
+
+.payment-content {
+    flex: 1;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Styles */
+.payment-header {
+    background: linear-gradient(135deg, #4a6fff 0%, #2a4fdf 100%);
+    color: white;
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.header-content h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.header-content p {
+    margin: 8px 0 0;
+    opacity: 0.8;
+    font-size: 16px;
+}
+
+.secure-badge {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 10px 16px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+/* Main Content Area */
+.payment-body {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+}
+
+.payment-card-container {
+    width: 100%;
+    max-width: 580px;
+}
+
+.payment-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 20px 30px;
+    background-color: #f5f7fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-title h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+.card-title svg {
+    color: #4a6fff;
+    font-size: 20px;
+}
+
+.card-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.card-icon {
+    width: 40px;
+    height: 25px;
+    border-radius: 4px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.4;
+    transition: opacity 0.3s ease;
+}
+
+.card-icon.active {
+    opacity: 1;
+}
+
+.card-icon.visa {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 651'%3E%3Cpath fill='%23436D99' d='M433,323L464,323L441,435L410,435L433,323L433,323ZM339,323L369,323L358,387L390,323L420,323L370,436L339,436L339,323ZM233,323L208,436L179,436L154,356L151,343L149,356C149,356 140,413 138,421C136,429 126,435 120,435L71,435L71,434C86,434 99,428 102,417L132,323L164,323L203,436L174,436L165,404L182,350L185,323L233,323L233,323ZM560,399C573,396 582,387 582,372C582,355 569,343 547,343C533,343 521,346 513,350L516,372C522,369 534,363 544,363C551,363 554,367 554,370C554,379 532,379 521,393C508,409 512,427 537,427C550,427 563,423 570,420L566,399C562,401 550,407 541,407C534,407 532,402 532,399C532,391 547,402 560,399L560,399Z'/%3E%3C/svg%3E");
+}
+
+.card-icon.mastercard {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 618'%3E%3Cpath fill='%23FF5F00' d='M380,309.5A184.5,184.5 0 0,1 564.5,125A184.5,184.5 0 0,1 749,309.5A184.5,184.5 0 0,1 564.5,494A184.5,184.5 0 0,1 380,309.5Z'/%3E%3Cpath fill='%23EB001B' d='M420,309.5A184.5,184.5 0 0,1 604.5,125A184.5,184.5 0 0,1 789,309.5A184.5,184.5 0 0,1 604.5,494A184.5,184.5 0 0,1 420,309.5Z'/%3E%3Cpath fill='%23F79E1B' d='M460,309.5A184.5,184.5 0 0,1 644.5,125A184.5,184.5 0 0,1 829,309.5A184.5,184.5 0 0,1 644.5,494A184.5,184.5 0 0,1 460,309.5Z'/%3E%3C/svg%3E");
+}
+
+.card-icon.amex {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 618'%3E%3Crect width='1000' height='618' fill='%231F72CD'/%3E%3Cpath fill='white' d='M214.6,380.3h-56.9v-142h56.9V380.3z M500.7,238.3l-39.4,93.9l-39.7-93.9H343v133.3l-70.1-133.3h-54.4l-71.6,142h41.9l16.1-35.3h80.2l16.1,35.3h80.9v-97.9l43.8,97.9h32.8l43.8-96.9v96.9h39.7v-142H500.7z M221.1,309.7l23.8-54.4l23.8,54.4H221.1z M722.9,238.3h-149v142h149l74.4-70.6L722.9,238.3z M692.8,345h-79.4v-23.4h75.9v-35.3h-75.9v-23.4h79.4l35.3,40.6L692.8,345z'/%3E%3C/svg%3E");
+}
+
+.card-icon.discover {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 651'%3E%3Cpath fill='%23F58220' d='M594,308A100,100 0 0,1 694,408A100,100 0 0,1 594,508A100,100 0 0,1 494,408A100,100 0 0,1 594,308Z'/%3E%3Cpath fill='%23F58220' d='M975,324H955V301H975V324ZM915,356L911,340H897L910,301H929L943,340H929L925,324L922,308H917L913,324L908,340H917L915,356ZM889,340H875V323H864V311H875V301H889V340ZM856,340H842V301H856V340ZM817,324C817,331 815,340 802,340H789V301H803C815,301 817,310 817,316V324ZM803,318H803V323H803C803,323 803,323 803,323C803,323 803,323 803,323V318C803,317 803,316 803,316C802,316 802,317 803,318ZM774,329H750V340H736V301H750V318H774V301H788V340H774V329ZM726,340H712V323H701V311H712V301H726V340ZM691,333C691,338 686,341 681,341S672,338 672,333V308C672,303 677,300 682,300S691,303 691,308V333ZM655,321C655,333 647,341 636,341C625,341 618,333 618,321C618,310 625,300 637,300C648,300 655,310 655,321ZM637,331C642,331 642,326 642,321S642,311 637,311C632,311 632,316 632,321S632,331 637,331ZM607,301V340H598L584,318V340H570V301H579L593,323V301H607ZM564,340H536V301H563C574,301 579,306 579,315C579,326 571,329 564,329H550V340H564ZM564,319C564,315 562,311 557,311H550V319H557C562,319 564,315 564,319ZM521,321C521,335 512,341 501,341C487,341 479,335 479,321V301H493V321C493,326 494,330 501,330C507,330 508,326 508,321V301H521V321ZM459,340H445V301H459V340ZM435,340H422V321L409,340H394L382,322V340H368V301H386L400,324L413,301H430L435,340ZM350,340H322V301H349C360,301 365,308 365,315C365,326 357,329 350,329H336V340H350ZM350,319C350,315 348,311 343,311H336V319H343C348,319 350,315 350,319ZM307,321C307,333 300,341 289,341C278,341 270,333 270,321C270,310 278,300 289,300C300,300 307,310 307,321ZM289,331C294,331 294,326 294,321S294,311 289,311C284,311 284,316 284,321S284,331 289,331ZM234,340L225,327H209V340H195V301H226C237,301 243,309 243,316C243,326 235,328 234,329L246,340H234ZM228,317C228,313 226,311 222,311H209V317H222C226,317 228,313 228,317ZM189,301H164V313H187V323H164V340H150V301H189ZM122,326H99V301H85V340H122V326ZM62,340H25V301H62V313H39V316H59V328H39V329H62V340Z'/%3E%3C/svg%3E");
+}
+
+/* Form Styles */
+.payment-form {
+    padding: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group.half {
+    flex: 1;
+}
+
+.payment-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+}
+
+.input-icon-wrapper {
+    position: relative;
+}
+
+.payment-form input {
+    width: 100%;
+    padding: 14px 16px 14px 40px;
+    border: 1px solid #e1e5ee;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.2s;
+    color: #333;
+}
+
+.payment-form input:focus {
+    outline: none;
+    border-color: #4a6fff;
+    box-shadow: 0 0 0 3px rgba(74, 111, 255, 0.1);
+}
+
+.payment-form input::placeholder {
+    color: #aab;
+}
+
+.input-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8f96a3;
+}
+
+.text-icon {
+    font-size: 11px;
+    font-weight: bold;
+    padding: 1px 4px;
+    border: 1px solid #8f96a3;
+    border-radius: 3px;
+    color: #8f96a3;
+}
+
+/* Payment Summary */
+.payment-summary {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    background-color: #f9fafc;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #555;
+}
+
+.summary-row.total {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e1e5ee;
+    font-weight: 600;
+    font-size: 18px;
+    color: #333;
+}
+
+/* Button Styles */
+.payment-button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #4a6fff 0%, #2a4fdf 100%);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.payment-button:hover {
+    background: linear-gradient(135deg, #3a5fee 0%, #1a3fcf 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(74, 111, 255, 0.2);
+}
+
+.payment-button:active {
+    transform: translateY(0);
+}
+
+.payment-button.loading {
+    background: linear-gradient(135deg, #3a5fee 0%, #1a3fcf 100%);
+    cursor: not-allowed;
+    opacity: 0.9;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Security Note */
+.security-note {
+    padding: 20px 30px;
+    background-color: #f9fafc;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.security-note svg {
+    color: #8f96a3;
+    flex-shrink: 0;
+}
+
+.security-note p {
+    margin: 0;
+    font-size: 13px;
+    color: #8f96a3;
+    line-height: 1.5;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .payment-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 20px;
+    }
+    
+    .payment-body {
+        padding: 20px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    
+    .card-icons {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-card-container {
+        width: 100%;
+    }
+}

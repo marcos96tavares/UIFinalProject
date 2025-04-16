@@ -32,7 +32,7 @@ const Contacts = () => {
                     </div>
                 </div>
                 <div className="text-center">
-                    <button className="btn btn-primary btn-xl text-uppercase " id="submitButton" type="submit">Send Message</button>
+                    <button className="btn btn-dark btn-xl text-uppercase " id="submitButton" type="submit">Send Message</button>
                 </div>
             </form>
         </div>

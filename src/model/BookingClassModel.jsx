@@ -1,39 +1,45 @@
 import React from "react";
+import "../styles/BookingClassModel.css"; // Import the CSS file
 
 const BookingClassModel = ({tracker, className}) => {
+    // Set default values to avoid null/undefined errors
+    const attended = tracker?.attended || 0;
+    const noShow = tracker?.noShow || 0;
+    const waitlist = tracker?.waitlist || 0;
+    
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="bg-white shadow-lg rounded-2xl p-6 w-96">
+        <div className="booking-model-container">
+            <div className="booking-model-card">
                 
-                <p className="text-gray-500 mb-4">Book your next training session</p>
+                <p className="booking-subtitle">Book your next training session</p>
 
                 {/* Card Content */}
-                <div className="bg-gray-100 p-4 rounded-xl">
-                    <h3 className="text-lg font-semibold">{className}</h3>
+                <div className="booking-info-container">
+                    <h3 className="booking-title">{className || "Muay Thai Class"}</h3>
 
                     {/* Row to display the columns */}
-                    <div className="row mt-4">
+                    <div className="booking-stats-row">
                         {/* First Column */}
-                        <div className="col">
-                            <div className="text-center bg-gray-200 p-3 rounded-lg">
-                                <p className="text-xl font-bold">{tracker.attended}</p>
-                                <p className="text-gray-500 text-sm">Attending</p>
+                        <div className="booking-stat-column">
+                            <div className="booking-stat-box">
+                                <p className="booking-stat-value">{attended}</p>
+                                <p className="booking-stat-label">Attending</p>
                             </div>
                         </div>
 
                         {/* Second Column */}
-                        <div className="col">
-                            <div className="text-center bg-gray-200 p-3 rounded-lg">
-                                <p className="text-xl font-bold">{tracker.noShow}</p>
-                                <p className="text-gray-500 text-sm">Canceled</p>
+                        <div className="booking-stat-column">
+                            <div className="booking-stat-box">
+                                <p className="booking-stat-value">{noShow}</p>
+                                <p className="booking-stat-label">Canceled</p>
                             </div>
                         </div>
 
                         {/* Third Column */}
-                        <div className="col">
-                            <div className="text-center bg-gray-200 p-3 rounded-lg">
-                                <p className="text-xl font-bold">{tracker.waitlist}</p>
-                                <p className="text-gray-500 text-sm">Waiting</p>
+                        <div className="booking-stat-column">
+                            <div className="booking-stat-box">
+                                <p className="booking-stat-value">{waitlist}</p>
+                                <p className="booking-stat-label">Waiting</p>
                             </div>
                         </div>
                     </div>

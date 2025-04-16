@@ -11,7 +11,7 @@ import PaymentPage from './pages/PaymentPage';
 import LoginAdmin from './pages/LoginAdmin';
 import ClassesAdminPage from './pages/ClassesAdminPage';
 import Dashboard from './pages/Dashboard';
-
+import Page404 from './pages/Page404';
 
 
 export default function App() {
@@ -32,6 +32,8 @@ export default function App() {
            <Route path="/login/admin" element={<LoginAdmin />} />
            <Route path="/admin/class" element={<ClassesAdminPage />} />
            <Route path="/admin/dashboard" element={<Dashboard />} />
+
+           <Route path='*' element={<Page404 />} />
 
         </Routes>
     </Router>    

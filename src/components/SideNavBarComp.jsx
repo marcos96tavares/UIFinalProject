@@ -1,50 +1,117 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import '../styles/SideNavBar.css';
-import { FaCalendarAlt, FaCreditCard, FaVideo, FaCog } from 'react-icons/fa';
-import Logout from './Logout';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { FaCalendarAlt, FaCreditCard, FaVideo, FaCog, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
 import { GiSharkJaws } from "react-icons/gi";
+import Logout from './Logout';
+import "../styles/SideNavBarAdminCss.css"; // Using the admin CSS file
 
 const SideNavBar = () => {
+    const [collapsed, setCollapsed] = useState(false);
+    const location = useLocation();
+    
+    const toggleSidebar = () => {
+        setCollapsed(!collapsed);
+    };
+    
+    // Check if route is active
+    const isActive = (path) => {
+        return location.pathname.startsWith(path) ? 'active' : '';
+    };
+
     return (
-        <div className="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary" style={{ width: "280px" }}>
-            <a href="/" className="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-                <GiSharkJaws className='icon' />
-                <span className="fs-4 ps-2">Team Shark</span>
-
-            </a>
-            <hr />
-            <ul className="nav nav-pills flex-column mb-auto">
-                <li className="nav-item">
-                    <Link to="/api/booking" className="nav-link custom-link">
-                        <FaCalendarAlt className="icon" />
-                        <span>Booking Classes</span>
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/payments" className="nav-link custom-link">
-                        <FaCreditCard className="icon" />
-                        <span>Payments</span>
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/api/videos" className="nav-link custom-link">
-                        <FaVideo className="icon" />
-                        <span>Videos</span>
-                    </Link>
-                </li>
-                <li>
-                    <Link to="/api/setting" className="nav-link custom-link">
-                        <FaCog className="icon" />
-                        <span>Settings</span>
-                    </Link>
-                </li>
-
-
-                <li>
-                    <Logout />
-                </li>
-            </ul>
+        <div className={`sidebar-container ${collapsed ? 'collapsed' : ''}`}>
+            <div className="sidebar-header">
+                <div className="logo-container">
+                    <GiSharkJaws className="logo-icon" />
+                    {!collapsed && <span className="logo-text">Team Shark</span>}
+                </div>
+                <button className="toggle-btn" onClick={toggleSidebar}>
+                    {collapsed ? <FaBars /> : <FaTimes />}
+                </button>
+            </div>
+            
+            <div className="sidebar-divider">
+                <span></span>
+            </div>
+            
+            <div className="profile-section">
+                <div className="profile-avatar">
+                    <span>U</span>
+                </div>
+                {!collapsed && (
+                    <div className="profile-info">
+                        <h5>User</h5>
+                        <p>Member</p>
+                    </div>
+                )}
+            </div>
+            
+            <div className="sidebar-divider">
+                <span></span>
+            </div>
+            
+            <div className="sidebar-menu">
+                <h6 className={`menu-category ${collapsed ? 'collapsed-text' : ''}`}>MENU</h6>
+                <ul className="nav-links">
+                    <li className={isActive('/api/booking')}>
+                        <Link to="/api/booking">
+                            <div className="icon-container">
+                                <FaCalendarAlt />
+                            </div>
+                            {!collapsed && <span>Booking Classes</span>}
+                            {!collapsed && isActive('/api/booking') && <div className="active-indicator"></div>}
+                        </Link>
+                    </li>
+                    <li className={isActive('/payments')}>
+                        <Link to="/payments">
+                            <div className="icon-container">
+                                <FaCreditCard />
+                            </div>
+                            {!collapsed && <span>Payments</span>}
+                            {!collapsed && isActive('/payments') && <div className="active-indicator"></div>}
+                        </Link>
+                    </li>
+                    <li className={isActive('/api/videos')}>
+                        <Link to="/api/videos">
+                            <div className="icon-container">
+                                <FaVideo />
+                            </div>
+                            {!collapsed && <span>Videos</span>}
+                            {!collapsed && isActive('/api/videos') && <div className="active-indicator"></div>}
+                        </Link>
+                    </li>
+                </ul>
+                
+                <h6 className={`menu-category ${collapsed ? 'collapsed-text' : ''}`}>SETTINGS</h6>
+                <ul className="nav-links">
+                    <li className={isActive('/api/setting')}>
+                        <Link to="/api/setting">
+                            <div className="icon-container">
+                                <FaCog />
+                            </div>
+                            {!collapsed && <span>Settings</span>}
+                            {!collapsed && isActive('/api/setting') && <div className="active-indicator"></div>}
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to="/home" className="logout-btn">
+                            <div className="icon-container">
+                                <FaSignOutAlt />
+                            </div>
+                            {!collapsed && <span>Logout</span>}
+                        </Link>
+                    </li>
+                </ul>
+            </div>
+            
+            <div className="sidebar-footer">
+                {!collapsed && (
+                    <div className="user-status">
+                        <span className="status-dot"></span>
+                        <span>Online</span>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

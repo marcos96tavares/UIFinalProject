@@ -1,16 +1,14 @@
+// Updated CardDashboard.jsx
 import React from 'react';
+import "../styles/DashboardCss.css"
 
-
-
-const CardDashboard = ({props}) => {
-    // Add your component logic here
-
-
-    return (
-        <div>
-                <div className="text">{props}</div>
-        </div>
-    );
+const CardDashboard = ({ props }) => {
+  // Add animation to the number display
+  return (
+    <div className="dashboard-value">
+      {props}
+    </div>
+  );
 };
 
 export default CardDashboard;

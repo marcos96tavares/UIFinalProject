@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { createClass } from "../api/ClassApi";
 import { useNavigate } from "react-router-dom";
+import "../styles/CreateClassModelCss.css"
+
 
 const CreateClassModal = () => {
   

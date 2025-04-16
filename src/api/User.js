@@ -1,6 +1,8 @@
 import axios from 'axios';
 
 
+const API = "http://localhost:8081/api/user"
+
 
 export const getUser = async (email) => {
     try {
@@ -16,3 +18,17 @@ export const getUser = async (email) => {
 };
 
 export default getUser;
+
+
+
+export const updateUser = async (Id, userDto) => {
+
+    try{
+        const response = await axios.put(`${API}/`+ Id , userDto)
+        return response.data
+
+    } catch(error){
+
+        console.log(error)
+    }
+}
