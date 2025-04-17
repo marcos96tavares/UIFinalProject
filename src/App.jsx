@@ -31,7 +31,7 @@ export default function App() {
             <Route path="/payments" element={<PaymentPage />} />
 
            {/*This is the Admin side*/}
-           <Route path="/login/admin" element={<LoginAdmin />} />
+           <Route path="/admin/login" element={<LoginAdmin />} />
            <Route path="/admin/class" element={<ClassesAdminPage />} />
            <Route path="/admin/dashboard" element={<Dashboard />} />
            <Route path="/admin/video" element={<VideoAdminPage />} />

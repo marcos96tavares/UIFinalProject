@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import LoadingSpinner from "../components/LoadingSpinner";
+import { FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 
 const Register = () => {
   // State to store form data
@@ -29,6 +30,36 @@ const Register = () => {
   // Move to payment step
   const nextStep = (e) => {
     e.preventDefault();
+    
+    // Validate first step fields
+    if (!formData.firstName.trim()) {
+      setError("First name is required");
+      return;
+    }
+    
+    if (!formData.lastName.trim()) {
+      setError("Last name is required");
+      return;
+    }
+    
+    if (!formData.email.trim()) {
+      setError("Email address is required");
+      return;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
+    
+    if (!formData.password.trim()) {
+      setError("Password is required");
+      return;
+    } else if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+    
+    // Clear any errors and proceed to next step
+    setError(null);
     setCurrentStep(2);
     window.scrollTo(0, 0);
   };
@@ -43,6 +74,29 @@ const Register = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validate payment fields
+    if (!formData.paymentName.trim()) {
+      setError("Name on card is required");
+      return;
+    }
+    
+    if (!formData.paymentCardNumber.trim() || formData.paymentCardNumber.replace(/\s/g, '').length < 16) {
+      setError("Please enter a valid card number");
+      return;
+    }
+    
+    if (!formData.paymentExpiration.trim() || !/^\d{2}\/\d{2}$/.test(formData.paymentExpiration)) {
+      setError("Please enter a valid expiration date (MM/YY)");
+      return;
+    }
+    
+    if (!formData.paymentCVV.trim() || !/^\d{3,4}$/.test(formData.paymentCVV)) {
+      setError("Please enter a valid CVV code");
+      return;
+    }
+    
+    setError(null);
     setLoading(true);
 
     try {
@@ -72,12 +126,32 @@ const Register = () => {
       setMessage("Registration successful! Welcome to our membership.");
       setError(null);
       
-       window.location.href = "/api/videos";
+      // Small delay to show success message before redirect
+      setTimeout(() => {
+        window.location.href = "/api/videos";
+      }, 2000);
       
     } catch (err) {
       console.error("❌ Error registering user:", err);
       setMessage(null);
-      setError("Failed to register. Please check your information and try again.");
+      
+      // Handle different types of errors
+      if (err.response) {
+        // The server responded with a status code outside the 2xx range
+        if (err.response.status === 409) {
+          setError("This email is already registered. Please use a different email address.");
+        } else if (err.response.status === 400) {
+          setError("Invalid information provided. Please check your details and try again.");
+        } else {
+          setError(`Registration failed: ${err.response.data.message || "Please try again later."}`);
+        }
+      } else if (err.request) {
+        // The request was made but no response was received
+        setError("Unable to connect to the server. Please check your internet connection and try again.");
+      } else {
+        // Something happened in setting up the request
+        setError("Failed to register. Please check your information and try again.");
+      }
     }
 
     setLoading(false);
@@ -97,6 +171,12 @@ const Register = () => {
       input = input.substring(0, 2) + '/' + input.substring(2, 4);
     }
     setFormData({ ...formData, paymentExpiration: input });
+  };
+
+  // Limit CVV to numbers only
+  const handleCvvChange = (e) => {
+    const input = e.target.value.replace(/\D/g, '');
+    setFormData({ ...formData, paymentCVV: input });
   };
 
   return (
@@ -135,21 +215,18 @@ const Register = () => {
                     </div>
                   </div>
 
-                  {/* Success & Error Messages */}
+                  {/* Success Message - Enhanced Alert */}
                   {message && (
-                    <div className="alert alert-success d-flex align-items-center" role="alert">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-check-circle-fill me-2" viewBox="0 0 16 16">
-                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-                      </svg>
+                    <div className="alert alert-success d-flex align-items-center mb-4" role="alert">
+                      <FaCheckCircle className="flex-shrink-0 me-2" size={20} />
                       <div>{message}</div>
                     </div>
                   )}
                   
+                  {/* Error Message - Enhanced Alert */}
                   {error && (
-                    <div className="alert alert-danger d-flex align-items-center" role="alert">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
-                        <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
-                      </svg>
+                    <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                      <FaExclamationTriangle className="flex-shrink-0 me-2" size={20} />
                       <div>{error}</div>
                     </div>
                   )}
@@ -313,7 +390,7 @@ const Register = () => {
                                 className="form-control form-control-lg"
                                 name="paymentCVV"
                                 value={formData.paymentCVV}
-                                onChange={handleChange}
+                                onChange={handleCvvChange}
                                 placeholder="123"
                                 maxLength="4"
                                 required

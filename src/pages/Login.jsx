@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { login } from '../api/LoginApi';
 import { getUser } from '../api/User';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { FaLock, FaEnvelope, FaArrowRight } from 'react-icons/fa';
+import { FaLock, FaEnvelope, FaArrowRight, FaExclamationTriangle } from 'react-icons/fa';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -10,6 +10,7 @@ const Login = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -34,7 +35,7 @@ const Login = () => {
                 }, 3000);
                 return;
             } else {
-                setError('Invalid credentials. Please try again.');
+                setError('Login failed. Check your credentials.');
             }
         } catch (error) {
             setError(error.message || 'Login failed. Check your credentials.');
@@ -121,10 +122,15 @@ const Login = () => {
                                         </label>
                                     </div>
 
-                                    {/* Error Message */}
+                                    {/* Enhanced Error Message Alert */}
                                     {error && (
-                                        <div className="alert alert-danger py-2 mb-4" role="alert">
-                                            {error}
+                                        <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                                            <FaExclamationTriangle className="flex-shrink-0 me-2" />
+                                            <div>
+                                                {error === 'Login failed. Check your credentials.' ? 
+                                                    'Invalid credentials. Please check your email and password.' : 
+                                                    error}
+                                            </div>
                                         </div>
                                     )}
 
