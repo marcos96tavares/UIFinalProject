@@ -23,7 +23,7 @@ export default function App() {
         {/*This is the Client side*/}
              
             <Route path="/login" element={<Login />} />
-            <Route path="/home" element={<HomePage />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/register" element ={<Register />} />
             <Route path="/api/videos" element={<Video />} />
             <Route path="/api/booking" element={<BookingPage />} />

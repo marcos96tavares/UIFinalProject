@@ -5,12 +5,14 @@ import CalendarComponent from "../components/CalendarComponent ";
 import ChatBootComponent from "../components/ChatBootCompoent";
 import { listAllClass } from "../api/Booking"; // ✅ API Import
 import "../styles/BookingPage.css"; // Import the CSS file
+import { getUser } from '../api/User';
+
 
 const BookingPage = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [listOfClass, setListOfClass] = useState([]);
     const [trackerData, setTrackerData] = useState([]);
-    const [bookedClassId, setBookedClassId] = useState(null); // ✅ Track a single booked class
+    const [bookedClassId, setBookedClassId] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -20,7 +22,7 @@ const BookingPage = () => {
             const selectedDay = selectedDate.toISOString().split("T")[0];
             
             console.log("Fetching classes for:", selectedDay);
-            
+            console.log(localStorage.key("userid"))
             try {
                 const data = await listAllClass(selectedDay);
                 console.log("Fetched Classes:", data);

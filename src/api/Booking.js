@@ -9,7 +9,7 @@ export const listAllClass = async (day) => {
     }
 
     try {
-        const response = await axios.get(`${API_URL}/${day}`); // ✅ Pass `day` as a path variable
+        const response = await axios.get(`${API_URL}/${day}`);
         console.log("API Response:", response.data);
         return response.data || [];
     } catch (error) {

@@ -94,7 +94,7 @@ const SideNavBar = () => {
                         </Link>
                     </li>
                     <li>
-                        <Link to="/home" className="logout-btn">
+                        <Link to="/" className="logout-btn">
                             <div className="icon-container">
                                 <FaSignOutAlt />
                             </div>

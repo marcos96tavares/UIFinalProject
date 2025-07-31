@@ -4,9 +4,27 @@ const API = "http://localhost:8081/api/user";
 
 export const getUser = async (email) => {
     try {
-        const response = await axios.get(`${API}/email/${email}`);
-        // 🔹 Save user data to localStorage
-        localStorage.setItem("userid", JSON.stringify(response.data.userDtoId));
+        // Check if the email is a JSON string and parse it if needed
+        let parsedEmail = email;
+        if (email && typeof email === 'string' && email.startsWith('"') && email.endsWith('"')) {
+            try {
+                parsedEmail = JSON.parse(email);
+            } catch (e) {
+                console.warn("Failed to parse email as JSON, using as-is");
+            }
+        }
+
+        console.log("Getting user with email:", parsedEmail);
+
+        const response = await axios.get(`${API}/email/${parsedEmail}`);
+        console.log("User data received:", response.data);
+
+        // Save user data to localStorage
+        if (response.data && response.data.userDtoId) {
+            localStorage.setItem("userid", JSON.stringify(response.data.userDtoId));
+            console.log("Saved userid to localStorage:", response.data.userDtoId);
+        }
+
         return response.data;
     } catch (error) {
         console.error('Error fetching user data:', error);

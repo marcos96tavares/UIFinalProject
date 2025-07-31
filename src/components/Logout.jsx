@@ -4,9 +4,8 @@ import { FaSignOutAlt } from 'react-icons/fa';
 
 const Logout = ({ customClass, collapsed }) => {
     const handleLogout = () => {
-        localStorage.removeItem('userToken');
-        localStorage.removeItem('userid');
-        window.location.href = '/home';
+        localStorage.clear();
+        window.location.href = '/';
     };
 
     return (

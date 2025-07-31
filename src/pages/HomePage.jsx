@@ -17,9 +17,14 @@ const HomePage = () => {
   
   // Handle scroll events
   useEffect(() => {
+
+   localStorage.removeItem("userid")
+
     const handleScroll = () => {
       const position = window.scrollY;
       setScrollPosition(position);
+
+
       
       // Show scroll-to-top button after scrolling down
       if (position > 300) {

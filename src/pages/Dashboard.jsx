@@ -27,7 +27,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  const revenue = numberOfMembers * 20;
+  const revenue = numberOfMembers * 120;
   
   // Mock data for additional charts
   const weeklyData = {

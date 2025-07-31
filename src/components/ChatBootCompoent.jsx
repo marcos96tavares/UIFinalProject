@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { FaCommentDots, FaPaperPlane, FaTimes } from "react-icons/fa";
+import { FaCommentDots, FaPaperPlane, FaTimes, FaExclamationTriangle } from "react-icons/fa";
 
 const ChatBotComponent = () => {
     const [showChat, setShowChat] = useState(false);
@@ -8,6 +8,7 @@ const ChatBotComponent = () => {
     const [chatHistory, setChatHistory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [typing, setTyping] = useState(false);
+    const [error, setError] = useState(null);
     const chatBoxRef = useRef(null);
     const inputRef = useRef(null);
 
@@ -16,7 +17,7 @@ const ChatBotComponent = () => {
         if (chatBoxRef.current) {
             chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
         }
-    }, [chatHistory]);
+    }, [chatHistory, typing]);
 
     // Focus on input when chat opens
     useEffect(() => {
@@ -37,14 +38,19 @@ const ChatBotComponent = () => {
 
     const toggleChat = () => {
         setShowChat(!showChat);
+        // Clear error when toggling chat
+        if (!showChat) {
+            setError(null);
+        }
     };
 
     const sendMessage = async () => {
         if (!message.trim() || loading) return;
-        
+
         const userMessage = message.trim();
         setMessage("");
         setLoading(true);
+        setError(null);
 
         // Add user message to chat history immediately
         setChatHistory(prev => [...prev, { user: userMessage, bot: null }]);
@@ -53,36 +59,57 @@ const ChatBotComponent = () => {
         setTimeout(() => setTyping(true), 500);
 
         try {
-            const userId = localStorage.getItem("userid") 
-                ? JSON.parse(localStorage.getItem("userid")) 
-                : "guest-user";
+            // Get user ID with safer parsing and fallback
+            let userId = "guest-user";
+            try {
+                const storedId = localStorage.getItem("userid");
+                if (storedId) {
+                    // Handle possible JSON format with quotes
+                    const parsedId = storedId.replace(/"/g, '');
+                    // Make sure it's a valid ID
+                    userId = !isNaN(parsedId) ? parsedId : "guest-user";
+                }
+            } catch (e) {
+                console.warn("Error getting user ID from localStorage:", e);
+            }
+
+            console.log("Sending message with userId:", userId);
 
             const res = await axios.post("http://localhost:8082/api/ai", {
                 message: userMessage,
-                userId,
+                userId: userId
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                timeout: 30000 // 30-second timeout
             });
 
             setTyping(false);
-            
+
             // Add bot response with slight delay for natural feel
             setTimeout(() => {
                 setChatHistory(prev => [
-                    ...prev, 
-                    { user: null, bot: res.data?.response || "No response from AI." }
+                    ...prev.filter(msg => msg.user !== userMessage || msg.bot !== null), // Remove placeholder
+                    { user: userMessage, bot: res.data?.response || "No response from AI." }
                 ]);
                 setLoading(false);
             }, 300);
-            
+
         } catch (error) {
             console.error("Error sending message:", error);
             setTyping(false);
-            
-            // Add error message
+            setError("Failed to get response from AI service. Please try again later.");
+
+            // Update the existing user message with an error response
             setTimeout(() => {
-                setChatHistory(prev => [
-                    ...prev,
-                    { user: null, bot: "Sorry, I couldn't process your request. Please try again." }
-                ]);
+                setChatHistory(prev =>
+                    prev.map(chat =>
+                        chat.user === userMessage && chat.bot === null
+                            ? { ...chat, bot: "Sorry, I couldn't process your request. The service might be unavailable." }
+                            : chat
+                    )
+                );
                 setLoading(false);
             }, 300);
         }
@@ -188,8 +215,8 @@ const ChatBotComponent = () => {
                         width: "10px",
                         height: "10px",
                         borderRadius: "50%",
-                        backgroundColor: "#4AFF91",
-                        boxShadow: "0 0 0 2px rgba(74, 255, 145, 0.3)",
+                        backgroundColor: error ? "#FF4A4A" : "#4AFF91",
+                        boxShadow: `0 0 0 2px ${error ? "rgba(255, 74, 74, 0.3)" : "rgba(74, 255, 145, 0.3)"}`,
                     }}></div>
                 </div>
 
@@ -205,6 +232,22 @@ const ChatBotComponent = () => {
                         flexDirection: "column"
                     }}
                 >
+                    {/* Global Error Message */}
+                    {error && (
+                        <div style={{
+                            padding: "10px 15px",
+                            backgroundColor: "#FFEBEE",
+                            borderRadius: "8px",
+                            display: "flex",
+                            alignItems: "center",
+                            marginBottom: "15px",
+                            borderLeft: "4px solid #FF4A4A"
+                        }}>
+                            <FaExclamationTriangle color="#FF4A4A" style={{ marginRight: "10px" }} />
+                            <span>{error}</span>
+                        </div>
+                    )}
+
                     {/* Welcome Message */}
                     {chatHistory.length === 0 && (
                         <div className="bot-message" style={{
@@ -219,9 +262,9 @@ const ChatBotComponent = () => {
                             animation: "fadeIn 0.5s ease"
                         }}>
                             <p style={{ margin: 0 }}>Hello! How can I assist you today?</p>
-                            <div style={{ 
-                                fontSize: "11px", 
-                                marginTop: "5px", 
+                            <div style={{
+                                fontSize: "11px",
+                                marginTop: "5px",
                                 opacity: 0.7,
                                 textAlign: "right"
                             }}>
@@ -244,13 +287,12 @@ const ChatBotComponent = () => {
                                     maxWidth: "85%",
                                     marginBottom: "15px",
                                     boxShadow: "0 2px 5px rgba(0,0,0,0.05)",
-                                    alignSelf: "flex-end",
                                     animation: "slideInRight 0.3s ease"
                                 }}>
                                     <p style={{ margin: 0 }}>{chat.user}</p>
-                                    <div style={{ 
-                                        fontSize: "11px", 
-                                        marginTop: "5px", 
+                                    <div style={{
+                                        fontSize: "11px",
+                                        marginTop: "5px",
                                         opacity: 0.7,
                                         textAlign: "right"
                                     }}>
@@ -273,9 +315,9 @@ const ChatBotComponent = () => {
                                     animation: "slideInLeft 0.3s ease"
                                 }}>
                                     <p style={{ margin: 0 }}>{chat.bot}</p>
-                                    <div style={{ 
-                                        fontSize: "11px", 
-                                        marginTop: "5px", 
+                                    <div style={{
+                                        fontSize: "11px",
+                                        marginTop: "5px",
                                         opacity: 0.7,
                                         textAlign: "right"
                                     }}>
@@ -363,17 +405,17 @@ const ChatBotComponent = () => {
                             value={message}
                             onChange={(e) => setMessage(e.target.value)}
                             onKeyPress={handleKeyPress}
-                            disabled={loading}
+                            disabled={loading || typing}
                         />
                         <button
                             onClick={sendMessage}
-                            disabled={!message.trim() || loading}
+                            disabled={!message.trim() || loading || typing}
                             style={{
                                 position: "absolute",
                                 right: "8px",
                                 top: "50%",
                                 transform: "translateY(-50%)",
-                                backgroundColor: !message.trim() || loading ? "#E1E5EE" : "#4A6FFF",
+                                backgroundColor: !message.trim() || loading || typing ? "#E1E5EE" : "#4A6FFF",
                                 color: "white",
                                 border: "none",
                                 borderRadius: "50%",
@@ -382,7 +424,7 @@ const ChatBotComponent = () => {
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                cursor: !message.trim() || loading ? "not-allowed" : "pointer",
+                                cursor: !message.trim() || loading || typing ? "not-allowed" : "pointer",
                                 transition: "all 0.3s ease"
                             }}
                         >
@@ -398,22 +440,22 @@ const ChatBotComponent = () => {
                     from { opacity: 0; }
                     to { opacity: 1; }
                 }
-                
+
                 @keyframes slideInRight {
                     from { transform: translateX(20px); opacity: 0; }
                     to { transform: translateX(0); opacity: 1; }
                 }
-                
+
                 @keyframes slideInLeft {
                     from { transform: translateX(-20px); opacity: 0; }
                     to { transform: translateX(0); opacity: 1; }
                 }
-                
+
                 @keyframes bounce {
                     0%, 80%, 100% { transform: translateY(0); }
                     40% { transform: translateY(-8px); }
                 }
-                
+
                 .chat-button:hover {
                     transform: scale(1.05);
                     box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);

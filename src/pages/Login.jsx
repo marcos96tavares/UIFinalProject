@@ -151,7 +151,7 @@ const Login = () => {
                                         <p className="text-muted mb-0">Don't have an account? <a href="/register" className="text-primary text-decoration-none fw-semibold">Create one</a></p>
                                     </div>
                                 </form>
-                                <p className="mt-4 mb-0 text-center text-muted small">© 2024 Team Shark. All rights reserved.</p>
+                                <p className="mt-4 mb-0 text-center text-muted small">© 2025 Team Shark. All rights reserved.</p>
                             </div>
                         )}
                     </div>
